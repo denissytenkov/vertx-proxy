@@ -1,0 +1,24 @@
+plugins {
+    id "application"
+    id 'java'
+}
+
+application {
+    mainClassName = "org.proxy.Main"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'io.vertx:vertx-core:3.9.3'
+    compile 'com.google.inject:guice:4.2.3'
+
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.16'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+}
