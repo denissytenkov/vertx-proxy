@@ -3,6 +3,7 @@ package org.proxy.server;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.*;
 
 @Singleton
@@ -25,7 +26,7 @@ public class VertxServerHandler implements Handler<HttpServerRequest> {
                 .setURI(serverRequest.uri())
                 .addHeader("Host", destination);
 
-        client.request(HttpMethod.GET, requestOptions, response -> {
+        HttpClientRequest clientRequest = client.request(serverRequest.method(), requestOptions, response -> {
             response.headers().entries()
                     .forEach(e -> {
                         serverResponse.headers().add(e.getKey(), e.getValue());
@@ -35,7 +36,9 @@ public class VertxServerHandler implements Handler<HttpServerRequest> {
             response.handler(serverResponse::write);
             response.endHandler(end -> serverResponse.end());
             response.exceptionHandler(e -> handleError(serverResponse, e));
-        }).end();
+        });
+        serverRequest.handler(clientRequest::write);
+        serverRequest.endHandler(event -> clientRequest.end());
 
     }
 
